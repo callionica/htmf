@@ -1,5 +1,13 @@
-# htmf
-Self-framing pages allow multipage web applications to preserve elements (such as `audio` and `video`) across navigations.
+# htmf - Shared state for multipage web applications
+
+`htmf` is a micro-framework for allowing multipage web applications to preserve elements (such as `audio` and `video`) across navigations using the powerful technique of *self-framing*.
+
+## Self-framing
+A self-framing web page is a page that detects whether it is hosted in a frame. If it is not in a frame, it alters the structure of its own page to create an `iframe` and load itself again within the `iframe`.
+
+The page understands which parts of itself are common to the web application and should be preserved (such as a `video` element or navigation controls) and which parts of itself are page-specific content, to be replaced when the user navigates to another page.
+
+The common parts of the page live in the top-level, outer document and the unique parts of the page live in the `iframe` in the inner document.
 
 ## The Code
 Add the `script` to the bottom of the `body` element to turn a normal web page into a self-framing page.
@@ -10,7 +18,7 @@ The first self-framing page in a session essentially loads twice: once as an out
 
 A small amount of script makes the outer page look the same as the inner page by updating the title and the URL that the user sees to match the title and URL of the inner page. This happens once during load so if your inner pages rely on changing the title during use, you might need to make sure that you're updating the title where users can see it.
 
-The frame replaces the `#self` element or the `body` of the page if no such element exists.
+The frame replaces the `#htmf` element or the `body` of the page if no such element exists.
 
 If you have parts of the page that should be shown when it's the outer page, but not the inner page (or vice versa), you can use CSS like
 ```
@@ -28,13 +36,13 @@ Here's the script:
             body.querySelector("script#self-framer").remove();
         } else {
             body.setAttribute("framed", "false");
-            const self = body.querySelector("#self");
+            const self = body.querySelector("#htmf");
             if (self != undefined) {
-                self.outerHTML = `<iframe name="self" id="self"></iframe>`;
+                self.outerHTML = `<iframe name="htmf" id="htmf"></iframe>`;
             } else {
-                body.innerHTML = `<iframe name="self" id="self"></iframe>`;
+                body.innerHTML = `<iframe name="htmf" id="htmf"></iframe>`;
             }
-            const iframe = body.querySelector("iframe#self");
+            const iframe = body.querySelector("iframe#htmf");
             iframe.src = document.location;
 
             function enableIFrameEvents(iframe) {
