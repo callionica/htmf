@@ -15,6 +15,8 @@ In the outer page, the common parts are eliminated by default. The micro-framewo
 
 In the inner page, the shared parts are hidden by default. The micro-framework uses CSS to set elements outside of the `#htmf` element to `display: none`.
 
+Your code and CSS can detect if you are in the outer or inner document by looking for the `framed` attribute on the document's `body`: `framed="false"` for the outer document and `framed="true"` for the inner document.
+
 ## The Code
 Add the `script` to the bottom of the `body` element to turn a normal web page into a self-framing page.
 
