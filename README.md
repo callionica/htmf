@@ -10,7 +10,7 @@ The first self-framing page in a session essentially loads twice: once as an out
 
 A small amount of script makes the outer page look the same as the inner page by updating the title and the URL that the user sees to match the title and URL of the inner page. This happens once during load so if your inner pages rely on changing the title during use, you might need to make sure that you're updating the title where users can see it.
 
-The frame replaces the element with `id` of `self` or the `body` of the page if no such element exists.
+The frame replaces the element with `#self` or the `body` of the page if no such element exists.
 
 If you have parts of the page that should be shown when it's the outer page, but not the inner page (or vice versa), you can use CSS like
 ```
