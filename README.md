@@ -24,8 +24,10 @@ First, `htmf` creates a `base` element in the `head` of the outer document that 
 
 Next, the micro-framework hooks various events on the `iframe` which tell it when a new document has been loaded. When it detects that a new document has been loaded in to the `iframe`, it copies some of the information from the inner document into the outer document, so that the user feels as though a normal page navigation has occurred. These items are copied from the inner document to the outer document:
 
-1. The title
-2. The URL
+1. The URL
+2. The title
+3. The canonical URL link
+4. Alternate representation links (RSS, Atom, etc)
 
 In this way, the document preserves the appearance of a single page instead of an outer and inner page.
 
@@ -79,6 +81,16 @@ Here's the script:
                 function onLocationChanged(oldURL, newURL) {
                     const inner = iframe.contentDocument;
                     document.title = inner.title;
+
+                    const selectors = ["link[rel='canonical']", "link[rel='alternate']"];
+                    for (const selector of selectors) {
+                        [...document.head.querySelectorAll(selector)].map(i => i.remove());
+                        const items = [...inner.head.querySelectorAll(selector)];
+                        for (const item of items) {
+                            document.head.append(item.cloneNode());
+                        }
+                    }
+
                     // TODO - copy other items from the inner document to the outer document (eg canonical links)
                     // TODO - adjust the URL if necessary
                     history.replaceState({}, document.title, newURL);
