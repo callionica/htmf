@@ -21,14 +21,19 @@ A small amount of script makes the outer page look the same as the inner page by
 The frame replaces the `#htmf` element or the `body` of the page if no such element exists.
 
 If you have parts of the page that should be shown when it's the outer page, but not the inner page (or vice versa), you can use CSS like
-```
-body[framed='true'] .outer-only {
+
+```CSS
+body[framed='true'] .htmf-outer {
+    display: none;
+}
+body[framed='false'] .htmf-inner {
     display: none;
 }
 ```
+
 Here's the script:
 
-```
+```JS
 <script id="self-framer">
         const body = document.body;
         if (window.frameElement !== null) {
