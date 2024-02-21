@@ -91,8 +91,6 @@ Here's the script:
                         }
                     }
 
-                    // TODO - copy other items from the inner document to the outer document (eg canonical links)
-                    // TODO - adjust the URL if necessary
                     history.replaceState({}, document.title, newURL);
 
                     iframe.dispatchEvent(new CustomEvent("location-changed", { bubbles: true, cancelable: true, detail: { oldURL, newURL } }));
