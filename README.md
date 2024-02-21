@@ -23,7 +23,7 @@ The frame replaces the `#htmf` element or the `body` of the page if no such elem
 Typically your page will contain elements outside of the `#htmf` element for your navigation controls, your media elements, or other shared state. To hide them when the page is framed, you can use CSS like the following which hides all elements that aren't descendants of the `#htmf` element when the page is framed.
 
 ```CSS
-body[framed='true'] :not(:is(#htmf)):not(:is(#htmf *)) {
+body[framed='true']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *)) {
     display: none;
 }
 ```
