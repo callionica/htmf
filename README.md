@@ -1,8 +1,8 @@
 # htmf - Shared state for multipage web applications
 
-`htmf` is a micro-framework for allowing multipage web applications to preserve elements (such as `audio` and `video`) across navigations using the powerful technique of *self-framing*.
+`htmf` is a micro-framework for allowing multipage web applications to preserve elements (such as `audio` and `video`) across navigations using the powerful technique of *self framing*.
 
-## Self-framing
+## Self Framing
 A self-framing web page is a page that detects whether it is hosted in a frame. If it is not in a frame, it alters the structure of its own page to create an `iframe` and load itself again within the `iframe`.
 
 The page understands which parts of itself are common to the web application and should be preserved (such as a `video` element or navigation controls) and which parts of itself are page-specific content, to be replaced when the user navigates to another page.
@@ -11,11 +11,23 @@ Marking up the page is as simple as applying `id="htmf"` to the element that con
 
 When the page is loaded in the browser, the common parts of the page live in the top-level, outer document and the unique parts of the page live in the `iframe` in the inner document.
 
-In the outer page, the common parts are eliminated by default. The micro-framework replaces the element `#htmf` which contains the common parts with the `iframe` that loads the inner document.
+In the outer page, the common parts are removed by default: the micro-framework replaces the `#htmf` element which contains the common parts with the `iframe` that loads the inner document.
 
-In the inner page, the shared parts are hidden by default. The micro-framework uses CSS to set elements outside of the `#htmf` element to `display: none`.
+In the inner page, the shared parts are hidden by default: the micro-framework uses CSS to set elements outside of the `#htmf` element to `display: none`.
 
 Your code and CSS can detect if you are in the outer or inner document by looking for the `framed` attribute on the document's `body`: `framed="false"` for the outer document and `framed="true"` for the inner document.
+
+## Self Preservation
+Normally dividing a web page into an outer parent and an inner child within an `iframe` could change its behavior, so the `htmf` micro-framework takes steps to preserve the behavior of the page.
+
+First, `htmf` creates a `base` element in the `head` of the outer document that retargets links from the current document to the inner document: `<base target="htmf">`. That means that if you click a link in the outer document, the outer page won't be replaced by the new document; instead, the inner iframe will load the new content.
+
+Next, the micro-framework hooks various events on the `iframe` which tell it when a new document has been loaded. When it detects that a new document has been loaded in to the `iframe`, it copies some of the information from the inner document into the outer document, so that the user feels as though a normal page navigation has occurred. These items are copied from the inner document to the outer document:
+
+1. The title
+2. The URL
+
+In this way, the document preserves the appearance of a single page instead of an outer and inner page.
 
 ## The Code
 Add the `script` to the bottom of the `body` element to turn a normal web page into a self-framing page.
