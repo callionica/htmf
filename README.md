@@ -7,7 +7,13 @@ A self-framing web page is a page that detects whether it is hosted in a frame. 
 
 The page understands which parts of itself are common to the web application and should be preserved (such as a `video` element or navigation controls) and which parts of itself are page-specific content, to be replaced when the user navigates to another page.
 
-The common parts of the page live in the top-level, outer document and the unique parts of the page live in the `iframe` in the inner document.
+Marking up the page is as simple as applying `id="htmf"` to the element that contains all the page-specific content. Everything outside of that element is common content.
+
+When the page is loaded in the browser, the common parts of the page live in the top-level, outer document and the unique parts of the page live in the `iframe` in the inner document.
+
+In the outer page, the common parts are eliminated by default. The micro-framework replaces the element `#htmf` which contains the common parts with the `iframe` that loads the inner document.
+
+In the inner page, the shared parts are hidden by default. The micro-framework uses CSS to set elements outside of the `#htmf` element to `display: none`.
 
 ## The Code
 Add the `script` to the bottom of the `body` element to turn a normal web page into a self-framing page.
