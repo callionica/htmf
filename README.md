@@ -31,18 +31,10 @@ Next, the micro-framework hooks various events on the `iframe` which tell it whe
 
 In this way, the document preserves the appearance of a single page instead of an outer and inner page.
 
-## The Code
-Add the `script` to the bottom of the `body` element to turn a normal web page into a self-framing page.
+## Quick Start
+Mark up the page-specific content by applying `id="htmf"` to the single element that contains it. All other content in your page is shared content.
 
-A self-framing page rehosts itself in an `iframe`. Links in that page automatically target the iframe, so all navigation now happens in the `iframe`.
-
-The first self-framing page in a session essentially loads twice: once as an outer page and once as an inner page. Make sure that the page has appropriate caching so that the second load into the `iframe` hits the already cached content and doesn't need to go back to the server. Other self-framing pages only load once: as an inner page in the `iframe`.
-
-A small amount of script makes the outer page look the same as the inner page by updating the title and the URL that the user sees to match the title and URL of the inner page. This happens once during load so if your inner pages rely on changing the title during use, you might need to make sure that you're updating the title where users can see it.
-
-The frame replaces the `#htmf` element or the `body` of the page if no such element exists.
-
-Typically your page will contain elements outside of the `#htmf` element for your navigation controls, your media elements, or other shared state. To hide them when the page is framed, you can use CSS like the following which hides all elements that aren't descendants of the `#htmf` element when the page is framed.
+Add this CSS to your documents' CSS:
 
 ```CSS
 body[framed='true']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *)) {
@@ -50,7 +42,9 @@ body[framed='true']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *)) {
 }
 ```
 
-Here's the script:
+This ensures that all the shared content like navigation controls, media elements, etc will be correctly hidden when the document is loaded in the `iframe`.
+
+Add this `script` to the bottom of the `body` element to turn your normal web page into a self-framing page.
 
 ```JS
 <script id="self-framer">
@@ -144,3 +138,16 @@ Here's the script:
         }
     </script>
 ```
+
+## Background
+A self-framing page rehosts itself in an `iframe`. Links in that page automatically target the iframe, so all navigation now happens in the `iframe`.
+
+The first self-framing page in a session essentially loads twice: once as an outer page and once as an inner page. Make sure that the page has appropriate caching so that the second load into the `iframe` hits the already cached content and doesn't need to go back to the server. Other self-framing pages only load once: as an inner page in the `iframe`.
+
+A small amount of script makes the outer page look the same as the inner page by updating the title and the URL that the user sees to match the title and URL of the inner page. This happens once during load so if your inner pages rely on changing the title during use, you might need to make sure that you're updating the title where users can see it.
+
+The frame replaces the `#htmf` element or the `body` of the page if no such element exists.
+
+Typically your page will contain elements outside of the `#htmf` element for your navigation controls, your media elements, or other shared state. To hide them when the page is framed, you can use CSS like the following which hides all elements that aren't descendants of the `#htmf` element when the page is framed.
+
+
