@@ -38,12 +38,19 @@ Here's the script:
             body.querySelector("script#self-framer").remove();
         } else {
             body.setAttribute("framed", "false");
+
             const self = body.querySelector("#htmf");
             if (self != undefined) {
                 self.outerHTML = `<iframe name="htmf" id="htmf"></iframe>`;
             } else {
                 body.innerHTML = `<iframe name="htmf" id="htmf"></iframe>`;
             }
+
+            const head = document.head;
+            const base = document.createElement("base");
+            base.target = "htmf";
+            head.append(base);
+
             const iframe = body.querySelector("iframe#htmf");
             iframe.src = document.location;
 
@@ -56,7 +63,7 @@ Here's the script:
                     // TODO - adjust the URL if necessary
                     history.replaceState({}, document.title, newURL);
 
-                    element.dispatchEvent(new CustomEvent("location-changed", { bubbles: true, cancelable: true, detail: { oldURL, newURL } }));
+                    iframe.dispatchEvent(new CustomEvent("location-changed", { bubbles: true, cancelable: true, detail: { oldURL, newURL } }));
                 }
 
                 function dispatchEventNow(e) {
