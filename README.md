@@ -48,95 +48,95 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
 
 ```JS
 <script id="self-framer">
-        const body = document.body;
-        if (window.frameElement !== null) {
-            body.setAttribute("framed", "true");
-            body.querySelector("script#self-framer").remove();
+    const body = document.body;
+    if (window.frameElement !== null) {
+        body.setAttribute("framed", "true");
+        body.querySelector("script#self-framer").remove();
+    } else {
+        body.setAttribute("framed", "false");
+
+        const self = body.querySelector("#htmf");
+        if (self != undefined) {
+            self.outerHTML = `<iframe name="htmf" id="htmf"></iframe>`;
         } else {
-            body.setAttribute("framed", "false");
-
-            const self = body.querySelector("#htmf");
-            if (self != undefined) {
-                self.outerHTML = `<iframe name="htmf" id="htmf"></iframe>`;
-            } else {
-                body.innerHTML = `<iframe name="htmf" id="htmf"></iframe>`;
-            }
-
-            const head = document.head;
-            const base = document.createElement("base");
-            base.target = "htmf";
-            head.append(base);
-
-            const iframe = body.querySelector("iframe#htmf");
-            iframe.src = document.location;
-
-            function enableIFrameEvents(iframe) {
-
-                function onLocationChanged(oldURL, newURL) {
-                    const inner = iframe.contentDocument;
-                    document.title = inner.title;
-
-                    const selectors = ["link[rel='canonical']", "link[rel='alternate']"];
-                    for (const selector of selectors) {
-                        [...document.head.querySelectorAll(selector)].map(i => i.remove());
-                        const items = [...inner.head.querySelectorAll(selector)];
-                        for (const item of items) {
-                            document.head.append(item.cloneNode());
-                        }
-                    }
-
-                    history.replaceState({}, document.title, newURL);
-
-                    iframe.dispatchEvent(new CustomEvent("location-changed", { bubbles: true, cancelable: true, detail: { oldURL, newURL } }));
-                }
-
-                function dispatchEventNow(e) {
-                    if (iframe.contentWindow == undefined) {
-                        return;
-                    }
-
-                    const { oldURL, newURL } = e;
-                    console.log(oldURL.toString(), newURL.toString());
-                    onLocationChanged(oldURL, newURL);
-                }
-
-                function dispatchEventLater() {
-                    const w = iframe.contentWindow;
-                    if (w == undefined) {
-                        return;
-                    }
-
-                    const oldURL = new URL(w.location.href);
-                    // Timeout of 0 because the URL changes immediately _after_ the `unload` event fires.
-                    setTimeout(function () {
-                        if (w) {
-                            const newURL = new URL(w.location.href);
-                            console.log(oldURL.toString(), newURL.toString());
-                            onLocationChanged(oldURL, newURL);
-                        }
-                    }, 0);
-                }
-
-                function attach() {
-                    const w = iframe.contentWindow;
-                    if (w == undefined) {
-                        return;
-                    }
-
-                    w.removeEventListener("unload", dispatchEventLater);
-                    w.removeEventListener("hashchange", dispatchEventNow);
-
-                    w.addEventListener("unload", dispatchEventLater);
-                    w.addEventListener("hashchange", dispatchEventNow);
-                }
-
-                iframe.addEventListener("load", attach);
-                attach();
-            }
-
-            enableIFrameEvents(iframe);
+            body.innerHTML = `<iframe name="htmf" id="htmf"></iframe>`;
         }
-    </script>
+
+        const head = document.head;
+        const base = document.createElement("base");
+        base.target = "htmf";
+        head.append(base);
+
+        const iframe = body.querySelector("iframe#htmf");
+        iframe.src = document.location;
+
+        function enableIFrameEvents(iframe) {
+
+            function onLocationChanged(oldURL, newURL) {
+                const inner = iframe.contentDocument;
+                document.title = inner.title;
+
+                const selectors = ["link[rel='canonical']", "link[rel='alternate']"];
+                for (const selector of selectors) {
+                    [...document.head.querySelectorAll(selector)].map(i => i.remove());
+                    const items = [...inner.head.querySelectorAll(selector)];
+                    for (const item of items) {
+                        document.head.append(item.cloneNode());
+                    }
+                }
+
+                history.replaceState({}, document.title, newURL);
+
+                iframe.dispatchEvent(new CustomEvent("location-changed", { bubbles: true, cancelable: true, detail: { oldURL, newURL } }));
+            }
+
+            function dispatchEventNow(e) {
+                if (iframe.contentWindow == undefined) {
+                    return;
+                }
+
+                const { oldURL, newURL } = e;
+                console.log(oldURL.toString(), newURL.toString());
+                onLocationChanged(oldURL, newURL);
+            }
+
+            function dispatchEventLater() {
+                const w = iframe.contentWindow;
+                if (w == undefined) {
+                    return;
+                }
+
+                const oldURL = new URL(w.location.href);
+                // Timeout of 0 because the URL changes immediately _after_ the `unload` event fires.
+                setTimeout(function () {
+                    if (w) {
+                        const newURL = new URL(w.location.href);
+                        console.log(oldURL.toString(), newURL.toString());
+                        onLocationChanged(oldURL, newURL);
+                    }
+                }, 0);
+            }
+
+            function attach() {
+                const w = iframe.contentWindow;
+                if (w == undefined) {
+                    return;
+                }
+
+                w.removeEventListener("unload", dispatchEventLater);
+                w.removeEventListener("hashchange", dispatchEventNow);
+
+                w.addEventListener("unload", dispatchEventLater);
+                w.addEventListener("hashchange", dispatchEventNow);
+            }
+
+            iframe.addEventListener("load", attach);
+            attach();
+        }
+
+        enableIFrameEvents(iframe);
+    }
+</script>
 ```
 
 ## Background
