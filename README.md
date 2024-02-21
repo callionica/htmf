@@ -5,7 +5,7 @@
 ## Self Framing
 A self-framing web page is a page that detects whether it is hosted in a frame. If it is not in a frame, it alters the structure of its own page to create an `iframe` and load itself again within the `iframe`.
 
-The page understands which parts of itself are common to the web application and should be preserved (such as a `video` element or navigation controls) and which parts of itself are page-specific content, to be replaced when the user navigates to another page.
+The page understands which parts of itself are common to the web application and should be preserved across navigations (such as a `video` element or navigation controls) and which parts of itself are page-specific content, to be replaced when the user navigates to another page.
 
 Marking up the page is as simple as applying `id="htmf"` to the element that contains all the page-specific content. Everything outside of that element is common content.
 
