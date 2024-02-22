@@ -38,12 +38,12 @@ Mark up the page-specific content by applying `id="htmf"` to the single element 
 
 Add this `script` to the bottom of the `body` element to turn your normal web page into a self-framing page.
 
-```JS
-    <script id="self-framer">
+```HTML
+    <script id="htmf-script">
         const body = document.body;
         if (window.frameElement !== null) {
             body.setAttribute("framed", "true");
-            body.querySelector("script#self-framer").remove();
+            body.querySelector("script#htmf-script").remove();
             [...body.querySelectorAll("body[framed='true']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *))")].map(e => e.remove());
         } else {
             body.setAttribute("framed", "false");
