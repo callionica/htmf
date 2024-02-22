@@ -79,7 +79,10 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
                         }
                     }
 
-                    history.replaceState({}, document.title, newURL);
+                    const visibleURL = new URL(newURL);
+                    visibleURL.searchParams.delete("cachebuster");
+
+                    history.replaceState({}, document.title, visibleURL);
 
                     iframe.dispatchEvent(new CustomEvent("location-changed", { bubbles: true, cancelable: true, detail: { oldURL, newURL } }));
                 }
@@ -153,6 +156,6 @@ If you have a multipage website where navigation elements are common across page
 
 ### URL simplification
 
-When you use `htmf`, your primary page is loaded in an `iframe`. By default, the user sees the URL of that page at the top level in the browser because `htmf` uses `history.replaceState` in `onLocationChanged` to surface it to the user. Once you're using `htmf`, you can decide to customise exactly what URL the user sees by surgically altering `onLocationChanged`. Perhaps you want to use URL search parameters like `?version=1.0` or `?cachebuster=de05d3bd-8f16-437a-b972-a4f1487ea427`, but you don't want the user to see those? You can adjust the code in `onLocationChanged` to remove those parameters before the user sees them.
+When you use `htmf`, your primary page is loaded in an `iframe`. By default, the user sees the URL of that page at the top level in the browser because `htmf` uses `history.replaceState` in `onLocationChanged` to surface it to the user. Once you're using `htmf`, you can decide to customise exactly what URL the user sees by surgically altering `onLocationChanged`. `htmf` already does some customisation of the visible URL for you by deleting URL search parameters like `?cachebuster=de05d3bd-8f16-437a-b972-a4f1487ea427`, but maybe you have other search params that you don't want the user to see? You can adjust the code in `onLocationChanged` to remove those parameters before the user sees them.
 
 
