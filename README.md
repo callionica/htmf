@@ -39,14 +39,27 @@ Mark up the page-specific content by applying `id="htmf"` to the single element 
 Add this `script` to the bottom of the `body` element to turn your normal web page into a self-framing page.
 
 ```HTML
-    <script id="htmf-script">
+   <script id="htmf-script">
         const body = document.body;
         body.querySelector("script#htmf-script").remove();
 
         if (window.frameElement !== null) {
-            body.setAttribute("framed", "true");    
+            globalThis.innerDocument = document;
+            globalThis.outerDocument = window.frameElement.ownerDocument;
+
+            body.setAttribute("framed", "true");
             [...body.querySelectorAll("body[framed='true']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *))")].map(e => e.remove());
         } else {
+            Object.defineProperty(globalThis, "innerDocument", {
+                get() {
+                    return document.querySelector("#htmf").contentDocument;
+                },
+                enumerable: true,
+                configurable: true,
+            });
+
+            globalThis.outerDocument = document;
+
             body.setAttribute("framed", "false");
 
             const self = body.querySelector("#htmf");
@@ -144,6 +157,8 @@ The first self-framing page in a session essentially loads twice: once as an out
 A small amount of script makes the outer page look the same as the inner page by updating the title, the URL, and some metadata to match those of the inner page. This happens once during load so if your inner pages rely on changing the title during use, you might need to make sure that you're updating the title where users can see it.
 
 The iframe replaces the `#htmf` element or the `body` of the page if no such element exists.
+
+The `htmf` micro-framework makes two globals available to you: `innerDocument` and `outerDocument`. These give you access to the inner & outer documents regardless of whether they are being used from the inner document or outer document.
 
 ## Uses
 ### The `video` element
