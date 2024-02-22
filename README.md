@@ -142,5 +142,17 @@ A small amount of script makes the outer page look the same as the inner page by
 
 The iframe replaces the `#htmf` element or the `body` of the page if no such element exists.
 
+## Uses
+### The `video` element
+
+If you are developing a website where video is important to users, you know that you want to preserve the `video` element even as the user navigates across pages. This is important to allow smooth, continuous play, and it's also important because the `video` element isn't scriptable until the first user interaction. You can't provide a good experience unless you share a `video` element across the different pages of your web site, but you want to retain the benefits of a multipage architecture. `htmf` is the solution.
+
+### User interface state
+
+If you have a multipage website where navigation elements are common across pages, you may start to see cases where the user's position in a tree or menu is being lost as they navigate from page to page, or you may be doing work to pass UI state between your pages to avoid these problems, but the complexity of your code is increasing. Rather than losing state that's important to the user or doing extra work to pass state between pages, you can instead use `htmf` to put the common UI in the outer page. The user never loses their place in the UI because the elements are not destroyed and created on each navigation, and you get to keep all the benefits of your multipage architecture.
+
+### URL simplification
+
+When you use `htmf`, your primary page is loaded in an `iframe`. By default, the user sees the URL of that page at the top level in the browser because `htmf` uses `history.replaceState` in `onLocationChanged` to surface it to the user. Once you're using `htmf`, you can decide to customise exactly what URL the user sees by surgically altering `onLocationChanged`. Perhaps you want to use URL search parameters like `?version=1.0` or `?cachebuster=de05d3bd-8f16-437a-b972-a4f1487ea427`, but you don't want the user to see those? You can adjust the code in `onLocationChanged` to remove those parameters before the user sees them.
 
 
