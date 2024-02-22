@@ -11,7 +11,7 @@ Marking up the page is as simple as applying `id="htmf"` to the element that con
 
 When the page is loaded in the browser, the common parts of the page live in the top-level, outer document and the unique parts of the page live in the `iframe` in the inner document.
 
-In the outer page, the common parts are removed: the micro-framework replaces the `#htmf` element which contains the common parts with the `iframe` that loads the inner document.
+In the outer page, the unique parts are removed: the micro-framework replaces the `#htmf` element (which contains the unique parts of the page) with the `iframe` that loads the inner document.
 
 In the inner page, the shared parts are removed: the micro-framework removes all elements outside of the `#htmf` element.
 
