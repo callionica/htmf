@@ -15,7 +15,7 @@ In the outer page, the unique parts are removed: the micro-framework replaces th
 
 In the inner page, the shared parts are removed: the micro-framework removes all elements outside of the `#htmf` element.
 
-Your code and CSS can detect if you are in the outer or inner document by looking for the `framed` attribute on the document's `body` (`framed="false"` for the outer document and `framed="true"` for the inner document) or by looking for the presence or absence of common elements or by using a standard technique to tell if the page is framed: `if (window.frameElement !== null)`.
+Your code and CSS can detect if you are in the outer or inner document by looking for the `htmf-document` attribute on the document's `body` (`htmf-document="outer"` for the outer document and `htmf-document="inner"` for the inner document) or by looking for the presence or absence of common elements or by using a standard technique to tell if the page is framed: `if (window.frameElement !== null)` or by comparing `document === outerDocument`.
 
 ## Self Preservation
 Normally dividing a web page into an outer parent and an inner child within an `iframe` could change its behavior, so the `htmf` micro-framework takes steps to preserve the behavior of the page.
@@ -39,7 +39,7 @@ Mark up the page-specific content by applying `id="htmf"` to the single element 
 Add this `script` to the bottom of the `body` element to turn your normal web page into a self-framing page.
 
 ```HTML
-   <script id="htmf-script">
+    <script id="htmf-script">
         const body = document.body;
         body.querySelector("script#htmf-script").remove();
 
@@ -47,7 +47,7 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
             globalThis.innerDocument = document;
             globalThis.outerDocument = window.frameElement.ownerDocument;
 
-            body.setAttribute("framed", "true");
+            body.setAttribute("htmf-document", "inner");
             [...body.querySelectorAll("body[framed='true']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *))")].map(e => e.remove());
         } else {
             Object.defineProperty(globalThis, "innerDocument", {
@@ -60,7 +60,7 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
 
             globalThis.outerDocument = document;
 
-            body.setAttribute("framed", "false");
+            body.setAttribute("htmf-document", "outer");
 
             const self = body.querySelector("#htmf");
             if (self != undefined) {
