@@ -41,9 +41,10 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
 ```HTML
     <script id="htmf-script">
         const body = document.body;
+        body.querySelector("script#htmf-script").remove();
+
         if (window.frameElement !== null) {
-            body.setAttribute("framed", "true");
-            body.querySelector("script#htmf-script").remove();
+            body.setAttribute("framed", "true");    
             [...body.querySelectorAll("body[framed='true']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *))")].map(e => e.remove());
         } else {
             body.setAttribute("framed", "false");
@@ -83,7 +84,7 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
                     iframe.dispatchEvent(new CustomEvent("location-changed", { bubbles: true, cancelable: true, detail: { oldURL, newURL } }));
                 }
 
-                function dispatchEventNow(e) {
+                function onHashChange(e) {
                     if (iframe.contentWindow == undefined) {
                         return;
                     }
@@ -93,7 +94,7 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
                     onLocationChanged(oldURL, newURL);
                 }
 
-                function dispatchEventLater() {
+                function onUnload() {
                     const w = iframe.contentWindow;
                     if (w == undefined) {
                         return;
@@ -116,11 +117,11 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
                         return;
                     }
 
-                    w.removeEventListener("unload", dispatchEventLater);
-                    w.removeEventListener("hashchange", dispatchEventNow);
+                    w.removeEventListener("unload", onUnload);
+                    w.removeEventListener("hashchange", onHashChange);
 
-                    w.addEventListener("unload", dispatchEventLater);
-                    w.addEventListener("hashchange", dispatchEventNow);
+                    w.addEventListener("unload", onUnload);
+                    w.addEventListener("hashchange", onHashChange);
                 }
 
                 iframe.addEventListener("load", attach);
