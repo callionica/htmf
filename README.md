@@ -48,7 +48,7 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
             globalThis.outerDocument = window.frameElement.ownerDocument;
 
             body.setAttribute("htmf-document", "inner");
-            [...body.querySelectorAll("body[framed='true']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *))")].map(e => e.remove());
+            [...body.querySelectorAll("body[htmf-document='inner']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *))")].map(e => e.remove());
         } else {
             Object.defineProperty(globalThis, "innerDocument", {
                 get() {
