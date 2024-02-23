@@ -176,4 +176,6 @@ If you have a multipage website where navigation elements are common across page
 
 When you use `htmf`, your primary page is loaded in an `iframe`. By default, the user sees the URL of that page at the top level in the browser because `htmf` uses `history.replaceState` to surface it to the user. Once you're using `htmf`, you can decide to customise exactly what URL the user sees by adding URL search parameters that you'd like to hide to the `htmf-hidden-parameters` attribute on the document's `body`. Maybe you like to use `cachebuster` or `version` parameters in the URL, but you don't need the user to see or share URLs with those parameters. These parameters can be easily hidden when you use the `htmf-hidden-parameters` attribute, which is simply a space-separated list of URL search parameter names that you want to be hidden.
 
+You can use URL simplification without dividing your page in two parts. If you don't have an element with `id="htmf"`, your entire page will end up in the `iframe` and you can enjoy URL simplification without having to make any changes to your web application at all. 
+
 
