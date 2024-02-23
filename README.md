@@ -48,7 +48,7 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
             globalThis.outerDocument = window.frameElement.ownerDocument;
 
             body.setAttribute("htmf-document", "inner");
-            [...body.querySelectorAll("body[framed='true']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *))")].map(e => e.remove());
+            [...body.querySelectorAll("body[htmf-document='inner']:has(#htmf) :not(:is(#htmf)):not(:is(#htmf *))")].map(e => e.remove());
         } else {
             Object.defineProperty(globalThis, "innerDocument", {
                 get() {
@@ -93,7 +93,10 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
                     }
 
                     const visibleURL = new URL(newURL);
-                    visibleURL.searchParams.delete("cachebuster");
+                    const hiddenParameters = (document.body.getAttribute("htmf-hidden-parameters") ?? "").split(" ");
+                    for (const hiddenParameter of hiddenParameters) {
+                        visibleURL.searchParams.delete(hiddenParameter);
+                    }
 
                     history.replaceState({}, document.title, visibleURL);
 
