@@ -39,7 +39,8 @@ Mark up the page-specific content by applying `id="htmf"` to the single element 
 Add this `script` to the bottom of the `body` element to turn your normal web page into a self-framing page.
 
 ```HTML
-    <script id="htmf-script">
+     <script id="htmf-script">
+        // htmf - (c) Callionica 2024 - https://github.com/callionica/htmf
         const body = document.body;
         body.querySelector("script#htmf-script").remove();
 
@@ -48,7 +49,10 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
             globalThis.outerDocument = window.frameElement.ownerDocument;
 
             body.setAttribute("htmf-document", "inner");
-            [...body.querySelectorAll("body[htmf-document='inner']:has(#htmf) :not(:has(#htmf)):not(:is(#htmf)):not(:is(#htmf *))")].map(e => e.remove());
+            const htmf = body.querySelector("#htmf") ?? undefined;
+            if (htmf !== undefined) {
+                body.replaceChildren(htmf);
+            }
         } else {
             Object.defineProperty(globalThis, "innerDocument", {
                 get() {
@@ -110,7 +114,7 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
 
                         history.replaceState({}, document.title, visibleURL);
                     };
-                    
+
                     ready(inner, preserve);
 
                     iframe.dispatchEvent(new CustomEvent("location-changed", { bubbles: true, cancelable: true, detail: { oldURL, newURL } }));
