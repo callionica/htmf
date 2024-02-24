@@ -77,28 +77,41 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
             const iframe = body.querySelector("iframe#htmf");
             iframe.src = document.location;
 
+            function ready(document, callback) {
+                if (document.readyState != 'loading') {
+                    callback();
+                } else {
+                    document.addEventListener('DOMContentLoaded', callback, { once: true });
+                }
+            }
+
             function enableIFrameEvents(iframe) {
 
                 function onLocationChanged(oldURL, newURL) {
                     const inner = iframe.contentDocument;
-                    document.title = inner.title;
 
-                    const selectors = ["link[rel='canonical']", "link[rel='alternate']", "link[rel='me']", "meta[name='description']", "meta[name='robots']"];
-                    for (const selector of selectors) {
-                        [...document.head.querySelectorAll(selector)].map(e => e.remove());
-                        const items = [...inner.head.querySelectorAll(selector)];
-                        for (const item of items) {
-                            document.head.append(item.cloneNode());
+                    const preserve = () => {
+                        document.title = inner.title;
+
+                        const selectors = ["link[rel='canonical']", "link[rel='alternate']", "link[rel='me']", "meta[name='description']", "meta[name='robots']"];
+                        for (const selector of selectors) {
+                            [...document.head.querySelectorAll(selector)].map(e => e.remove());
+                            const items = [...inner.head.querySelectorAll(selector)];
+                            for (const item of items) {
+                                document.head.append(item.cloneNode());
+                            }
                         }
-                    }
 
-                    const visibleURL = new URL(newURL);
-                    const hiddenParameters = (document.body.getAttribute("htmf-hidden-parameters") ?? "").split(" ");
-                    for (const hiddenParameter of hiddenParameters) {
-                        visibleURL.searchParams.delete(hiddenParameter);
-                    }
+                        const visibleURL = new URL(newURL);
+                        const hiddenParameters = (document.body.getAttribute("htmf-hidden-parameters") ?? "").split(" ");
+                        for (const hiddenParameter of hiddenParameters) {
+                            visibleURL.searchParams.delete(hiddenParameter);
+                        }
 
-                    history.replaceState({}, document.title, visibleURL);
+                        history.replaceState({}, document.title, visibleURL);
+                    };
+                    
+                    ready(inner, preserve);
 
                     iframe.dispatchEvent(new CustomEvent("location-changed", { bubbles: true, cancelable: true, detail: { oldURL, newURL } }));
                 }
