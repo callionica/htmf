@@ -39,14 +39,59 @@ Mark up the page-specific content by applying `id="htmf"` to the single element 
 Add this `script` to the bottom of the `body` element to turn your normal web page into a self-framing page.
 
 ```HTML
-     <script id="htmf-script">
+    <script id="htmf-script">
         // htmf - (c) Callionica 2024 - https://github.com/callionica/htmf
         const body = document.body;
         body.querySelector("script#htmf-script").remove();
 
+        /** The documents in the frame hierarchy from top to inner (for example: [top, parent, parent, self, inner], but typically: [outer, inner]) */
+        Object.defineProperty(globalThis, "documentList", {
+            get() {
+                const result = [];
+
+                if (document !== innerDocument) {
+                    result.push(innerDocument);
+                }
+
+                let current = globalThis;
+                while (true) {
+                    result.push(current.document);
+                    if (current === current.parent) {
+                        break;
+                    }
+                    current = current.parent;
+                }
+
+                return result.reverse();
+            },
+            enumerable: true,
+            configurable: true,
+        });
+
+        /** Returns a document given a target string ("_top", "htmf", "_self", "_parent", etc) */
+        function targetToDocument(target) {
+            switch (target) {
+                case "_top": return top.document;
+                case "_parent": return parent?.document;
+                case "_self": return document;
+                case "_outer": return outerDocument;
+                case "_inner": return innerDocument;
+                case "htmf": return innerDocument;
+            }
+            return undefined;
+        }
+
+        function queryAll(selector, roots = documentList) {
+            const result = [];
+            for (const root of roots) {
+                result.push(...root.querySelectorAll(selector));
+            }
+            return result;
+        }
+
         if (window.frameElement !== null) {
             globalThis.innerDocument = document;
-            globalThis.outerDocument = window.frameElement.ownerDocument;
+            globalThis.outerDocument = parent.document;
 
             body.setAttribute("htmf-document", "inner");
             const htmf = body.querySelector("#htmf") ?? undefined;
@@ -121,7 +166,8 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
                 }
 
                 function onHashChange(e) {
-                    if (iframe.contentWindow == undefined) {
+                    const w = iframe.contentWindow ?? undefined;
+                    if (w === undefined) {
                         return;
                     }
 
@@ -131,8 +177,8 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
                 }
 
                 function onUnload() {
-                    const w = iframe.contentWindow;
-                    if (w == undefined) {
+                    const w = iframe.contentWindow ?? undefined;
+                    if (w === undefined) {
                         return;
                     }
 
@@ -148,8 +194,8 @@ Add this `script` to the bottom of the `body` element to turn your normal web pa
                 }
 
                 function attach() {
-                    const w = iframe.contentWindow;
-                    if (w == undefined) {
+                    const w = iframe.contentWindow ?? undefined;
+                    if (w === undefined) {
                         return;
                     }
 
