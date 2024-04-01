@@ -1,5 +1,5 @@
 # HyperTextMicroFramework (htmf v0.7) 
-# htmf provides shared state for multipage web applications
+## htmf provides shared state for multipage web applications
 
 `htmf` is a micro-framework for allowing multipage web applications to preserve elements (such as `audio` and `video`) across navigations using the powerful technique of *self framing*.
 
